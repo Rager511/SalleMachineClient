@@ -21,7 +21,7 @@ import util.Utils;
  *
  * @author Lachgar
  */
-public class MachineForm extends javax.swing.JInternalFrame {
+public final class MachineForm extends javax.swing.JInternalFrame {
 
     DefaultTableModel model = null;
     IDao<Machine> dao = null;
@@ -36,11 +36,7 @@ public class MachineForm extends javax.swing.JInternalFrame {
 
         try {
             dao = (IDao<Machine>) Naming.lookup(Utils.getUrl() + "/dao");
-        } catch (NotBoundException ex) {
-            Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
+        } catch (NotBoundException | MalformedURLException | RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         load();
@@ -256,14 +252,27 @@ public class MachineForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void resetInputs() {
+        txtRef.setText("");
+        txtMarque.setText("");
+        txtPrix.setText("");
+        selectedId = null;
+    }
+
     private void bnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnAddActionPerformed
         try {
             // TODO add your handling code here:
-            String ref = txtRef.getText().toString();
-            String marque = txtMarque.getText().toString();
-            double prix = Double.parseDouble(txtPrix.getText().toString());
-            dao.create(new Machine(ref, marque, prix));
-            load();
+            String ref = txtRef.getText();
+            String marque = txtMarque.getText();
+            try {
+                double prix = Double.parseDouble(txtPrix.getText());
+                dao.create(new Machine(ref, marque, prix));
+                resetInputs();
+                load();
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Le prix doit etre un nombre!");
+                System.out.println(e);
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -271,11 +280,11 @@ public class MachineForm extends javax.swing.JInternalFrame {
 
     private void tableMachinesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMachinesMouseClicked
         int row = tableMachines.getSelectedRow();
-        DefaultTableModel model = (DefaultTableModel) tableMachines.getModel();
-        selectedId = (Integer) model.getValueAt(row, 0);
-        txtRef.setText(model.getValueAt(row, 1).toString());
-        txtMarque.setText(model.getValueAt(row, 2).toString());
-        txtPrix.setText(model.getValueAt(row, 3).toString());
+        DefaultTableModel m = (DefaultTableModel) tableMachines.getModel();
+        selectedId = (Integer) m.getValueAt(row, 0);
+        txtRef.setText(m.getValueAt(row, 1).toString());
+        txtMarque.setText(m.getValueAt(row, 2).toString());
+        txtPrix.setText(m.getValueAt(row, 3).toString());
     }//GEN-LAST:event_tableMachinesMouseClicked
 
     private void bnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bnDeleteMouseClicked
@@ -284,12 +293,13 @@ public class MachineForm extends javax.swing.JInternalFrame {
                     && !txtRef.getText().isEmpty()
                     && !txtMarque.getText().isEmpty()
                     && !txtPrix.getText().isEmpty()) {
-                String ref = txtRef.getText().toString();
-                String marque = txtMarque.getText().toString();
-                double prix = Double.parseDouble(txtPrix.getText().toString());
+                String ref = txtRef.getText();
+                String marque = txtMarque.getText();
+                double prix = Double.parseDouble(txtPrix.getText());
                 Machine m = new Machine(ref, marque, prix);
                 m.setId(selectedId);
                 dao.delete(m);
+                resetInputs();
                 load();
             } else {
                 JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une machine!");
@@ -304,20 +314,21 @@ public class MachineForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtMarqueActionPerformed
 
     private void bnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnUpdateActionPerformed
-                try {
+        try {
             if (selectedId != null
                     && !txtRef.getText().isEmpty()
                     && !txtMarque.getText().isEmpty()
                     && !txtPrix.getText().isEmpty()) {
-                String ref = txtRef.getText().toString();
-                String marque = txtMarque.getText().toString();
-                double prix = Double.parseDouble(txtPrix.getText().toString());
+                String ref = txtRef.getText();
+                String marque = txtMarque.getText();
+                double prix = Double.parseDouble(txtPrix.getText());
                 Machine m = new Machine(ref, marque, prix);
                 m.setId(selectedId);
                 m.setRef(ref);
                 m.setMarque(marque);
                 m.setPrix(prix);
                 dao.update(m);
+                resetInputs();
                 load();
             } else {
                 JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une machine!");
