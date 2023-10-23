@@ -9,13 +9,13 @@ import java.io.Serializable;
 
 public class Salle implements Serializable{
     private int id;
-    private String code;
+    private String codeSalle;
 
     public Salle() {
     }
 
-    public Salle(String code) {
-        this.code = code;
+    public Salle(String codeSalle) {
+        this.codeSalle = codeSalle;
     }
 
     public int getId() {
@@ -26,16 +26,16 @@ public class Salle implements Serializable{
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getCodeSalle() {
+        return codeSalle;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCodeSalle(String codeSalle) {
+        this.codeSalle = codeSalle;
     }
 
     @Override
     public String toString() {
-        return "Salle{" + "id=" + id + ", code=" + code + "}";
+        return "Salle{" + "id=" + id + ", codeSalle=" + codeSalle + "}";
     }
 }

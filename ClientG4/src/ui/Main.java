@@ -16,7 +16,7 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
-        this.setTitle("Gestion des machines");
+        this.setTitle("Gestion des machines des salles");
         this.setExtendedState(MAXIMIZED_BOTH);
     }
 
@@ -37,11 +37,11 @@ public class Main extends javax.swing.JFrame {
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        machineMenuItem = new javax.swing.JMenuItem();
+        machinesMenuItem = new javax.swing.JMenuItem();
+        sallesMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
         pasteMenuItem = new javax.swing.JMenuItem();
         deleteMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -78,14 +78,22 @@ public class Main extends javax.swing.JFrame {
         editMenu.setMnemonic('e');
         editMenu.setText("Gestion");
 
-        machineMenuItem.setMnemonic('t');
-        machineMenuItem.setText("Machines");
-        machineMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        machinesMenuItem.setMnemonic('t');
+        machinesMenuItem.setText("Machines");
+        machinesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                machineMenuItemActionPerformed(evt);
+                machinesMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(machineMenuItem);
+        editMenu.add(machinesMenuItem);
+
+        sallesMenuItem.setText("Salles");
+        sallesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sallesMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(sallesMenuItem);
 
         copyMenuItem.setMnemonic('y');
         copyMenuItem.setText("Copy");
@@ -98,14 +106,6 @@ public class Main extends javax.swing.JFrame {
         deleteMenuItem.setMnemonic('d');
         deleteMenuItem.setText("Delete");
         editMenu.add(deleteMenuItem);
-
-        jMenuItem1.setText("jMenuItem1");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        editMenu.add(jMenuItem1);
 
         menuBar.add(editMenu);
 
@@ -142,18 +142,18 @@ public class Main extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void machineMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_machineMenuItemActionPerformed
+    private void machinesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_machinesMenuItemActionPerformed
         // TODO add your handling code here:
         MachineForm mf = new MachineForm();
         desktopPane.add(mf);
         mf.show();
-    }//GEN-LAST:event_machineMenuItemActionPerformed
+    }//GEN-LAST:event_machinesMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        MachineForm mf = new MachineForm();
-        desktopPane.add(mf);
-        mf.show();// TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void sallesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sallesMenuItemActionPerformed
+        SalleForm sf = new SalleForm();
+        desktopPane.add(sf);
+        sf.show();// TODO add your handling code here:
+    }//GEN-LAST:event_sallesMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,11 +200,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem machineMenuItem;
+    private javax.swing.JMenuItem machinesMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JMenuItem sallesMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables

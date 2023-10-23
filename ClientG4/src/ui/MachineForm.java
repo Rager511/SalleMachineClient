@@ -35,7 +35,7 @@ public final class MachineForm extends javax.swing.JInternalFrame {
         model = (DefaultTableModel) tableMachines.getModel();
 
         try {
-            dao = (IDao<Machine>) Naming.lookup(Utils.getUrl() + "/dao");
+            dao = (IDao<Machine>) Naming.lookup(Utils.getUrl() + "/daoMachine");
         } catch (NotBoundException | MalformedURLException | RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -298,7 +298,7 @@ public final class MachineForm extends javax.swing.JInternalFrame {
                     System.out.println(e);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Les champs sons obligatoires!");
+                JOptionPane.showMessageDialog(this, "Les champs sont obligatoires!");
             }
         } catch (RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -359,7 +359,7 @@ public final class MachineForm extends javax.swing.JInternalFrame {
                 resetInputs();
                 load();
             } else {
-                JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une machine!");
+                JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une machine! Tout les champs sont obligatoires!");
             }
         } catch (RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);

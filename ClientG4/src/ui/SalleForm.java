@@ -5,17 +5,54 @@
  */
 package ui;
 
+import dao.IDao;
+import entities.Salle;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import util.Utils;
+
 /**
  *
  * @author pc
  */
-public class SalleForm extends javax.swing.JInternalFrame {
+public final class SalleForm extends javax.swing.JInternalFrame {
+
+    DefaultTableModel model = null;
+    IDao<Salle> dao = null;
+    Integer selectedId = null;
 
     /**
      * Creates new form SalleForm
      */
     public SalleForm() {
         initComponents();
+        model = (DefaultTableModel) tableSalles.getModel();
+        try {
+            dao = (IDao<Salle>) Naming.lookup(Utils.getUrl() + "/daoSalle");
+        } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+            Logger.getLogger(SalleForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        load();
+    }
+
+    public void load() {
+        try {
+            model.setRowCount(0);
+            for (Salle s : dao.findAll()) {
+                model.addRow(new Object[]{
+                    s.getId(),
+                    s.getCodeSalle()
+                });
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(SalleForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -29,19 +66,26 @@ public class SalleForm extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        txtPrix = new javax.swing.JTextField();
+        txtCodeSalle = new javax.swing.JTextField();
+        lblSelectedId = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bnAdd = new javax.swing.JButton();
         bnUpdate = new javax.swing.JButton();
         bnDelete = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableMachines = new javax.swing.JTable();
+        tableSalles = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Informations machine"));
+        jPanel1.setName(""); // NOI18N
 
         jLabel3.setText("Code");
+
+        lblSelectedId.setText(" ");
+
+        jLabel4.setText("ID Salle selectionnée");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -51,23 +95,39 @@ public class SalleForm extends javax.swing.JInternalFrame {
                 .addGap(53, 53, 53)
                 .addComponent(jLabel3)
                 .addGap(65, 65, 65)
-                .addComponent(txtPrix, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(245, Short.MAX_VALUE))
+                .addComponent(txtCodeSalle, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(lblSelectedId)))
+                .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtPrix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(88, 88, 88))
+                .addContainerGap(96, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSelectedId))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtCodeSalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(78, 78, 78))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Actions"));
 
         bnAdd.setText("Ajouter");
+        bnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnAddActionPerformed(evt);
+            }
+        });
 
         bnUpdate.setText("Modifier");
         bnUpdate.addActionListener(new java.awt.event.ActionListener() {
@@ -77,6 +137,11 @@ public class SalleForm extends javax.swing.JInternalFrame {
         });
 
         bnDelete.setText("Supprimer");
+        bnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -105,7 +170,7 @@ public class SalleForm extends javax.swing.JInternalFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Liste des machines"));
 
-        tableMachines.setModel(new javax.swing.table.DefaultTableModel(
+        tableSalles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -113,7 +178,12 @@ public class SalleForm extends javax.swing.JInternalFrame {
                 "ID", "Code"
             }
         ));
-        jScrollPane1.setViewportView(tableMachines);
+        tableSalles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableSallesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableSalles);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -155,13 +225,76 @@ public class SalleForm extends javax.swing.JInternalFrame {
 
         jPanel1.getAccessibleContext().setAccessibleName("Informations salle");
         jPanel3.getAccessibleContext().setAccessibleName("Liste des salles");
+        jPanel3.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void resetInputs() {
+        txtCodeSalle.setText("");
+        selectedId = null;
+    }
+
     private void bnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnUpdateActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (selectedId != null
+                    && !txtCodeSalle.getText().isEmpty()) {
+                String codeSalle = txtCodeSalle.getText();
+                Salle s = new Salle(codeSalle);
+                s.setId(selectedId);
+                s.setCodeSalle(codeSalle);
+                dao.update(s);
+                resetInputs();
+                load();
+            } else {
+                JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une salle! Tout les champs sont obligatoires!");
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(SalleForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_bnUpdateActionPerformed
+
+    private void tableSallesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSallesMouseClicked
+        int row = tableSalles.getSelectedRow();
+        DefaultTableModel m = (DefaultTableModel) tableSalles.getModel();
+        selectedId = (Integer) m.getValueAt(row, 0);
+        txtCodeSalle.setText(m.getValueAt(row, 1).toString());
+        lblSelectedId.setText(String.valueOf(selectedId));
+    }//GEN-LAST:event_tableSallesMouseClicked
+
+    private void bnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnAddActionPerformed
+        try {
+            // TODO add your handling code here:
+            if (!txtCodeSalle.getText().isEmpty()) {
+                String codeSalle = txtCodeSalle.getText();
+                dao.create(new Salle(codeSalle));
+                resetInputs();
+                load();
+            } else {
+                JOptionPane.showMessageDialog(this, "Les champs sont obligatoires!");
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(SalleForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bnAddActionPerformed
+
+    private void bnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnDeleteActionPerformed
+        try {
+            if (selectedId != null
+                    && !txtCodeSalle.getText().isEmpty()) {
+                String code = txtCodeSalle.getText();
+                Salle s = new Salle(code);
+                s.setId(selectedId);
+                dao.delete(s);
+                resetInputs();
+                load();
+            } else {
+                JOptionPane.showMessageDialog(this, "Il faut d'abord selectionner une salle!");
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(SalleForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -169,11 +302,13 @@ public class SalleForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton bnDelete;
     private javax.swing.JButton bnUpdate;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tableMachines;
-    private javax.swing.JTextField txtPrix;
+    private javax.swing.JLabel lblSelectedId;
+    private javax.swing.JTable tableSalles;
+    private javax.swing.JTextField txtCodeSalle;
     // End of variables declaration//GEN-END:variables
 }
