@@ -74,6 +74,8 @@ public final class MachineForm extends javax.swing.JInternalFrame {
         txtRef = new javax.swing.JTextField();
         txtMarque = new javax.swing.JTextField();
         txtPrix = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        lblSelectedId = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bnAdd = new javax.swing.JButton();
         bnUpdate = new javax.swing.JButton();
@@ -104,6 +106,10 @@ public final class MachineForm extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel4.setText("ID Machine selectionnée");
+
+        lblSelectedId.setText(" ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,7 +125,13 @@ public final class MachineForm extends javax.swing.JInternalFrame {
                     .addComponent(txtRef)
                     .addComponent(txtMarque)
                     .addComponent(txtPrix, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
-                .addContainerGap(244, Short.MAX_VALUE))
+                .addGap(98, 98, 98)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(lblSelectedId)))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,16 +140,26 @@ public final class MachineForm extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtRef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtMarque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtPrix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtMarque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtPrix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(36, 36, 36))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSelectedId)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
+
+        lblSelectedId.getAccessibleContext().setAccessibleName(" ");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Actions"));
@@ -257,21 +279,26 @@ public final class MachineForm extends javax.swing.JInternalFrame {
         txtMarque.setText("");
         txtPrix.setText("");
         selectedId = null;
+        lblSelectedId.setText("");
     }
 
     private void bnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnAddActionPerformed
         try {
             // TODO add your handling code here:
-            String ref = txtRef.getText();
-            String marque = txtMarque.getText();
-            try {
-                double prix = Double.parseDouble(txtPrix.getText());
-                dao.create(new Machine(ref, marque, prix));
-                resetInputs();
-                load();
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Le prix doit etre un nombre!");
-                System.out.println(e);
+            if (!txtRef.getText().isEmpty() && !txtMarque.getText().isEmpty() && !txtPrix.getText().isEmpty()) {
+                String ref = txtRef.getText();
+                String marque = txtMarque.getText();
+                try {
+                    double prix = Double.parseDouble(txtPrix.getText());
+                    dao.create(new Machine(ref, marque, prix));
+                    resetInputs();
+                    load();
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Le prix doit etre un nombre!");
+                    System.out.println(e);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Les champs sons obligatoires!");
             }
         } catch (RemoteException ex) {
             Logger.getLogger(MachineForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -285,6 +312,7 @@ public final class MachineForm extends javax.swing.JInternalFrame {
         txtRef.setText(m.getValueAt(row, 1).toString());
         txtMarque.setText(m.getValueAt(row, 2).toString());
         txtPrix.setText(m.getValueAt(row, 3).toString());
+        lblSelectedId.setText(String.valueOf(selectedId));
     }//GEN-LAST:event_tableMachinesMouseClicked
 
     private void bnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bnDeleteMouseClicked
@@ -346,10 +374,12 @@ public final class MachineForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblSelectedId;
     private javax.swing.JTable tableMachines;
     private javax.swing.JTextField txtMarque;
     private javax.swing.JTextField txtPrix;
